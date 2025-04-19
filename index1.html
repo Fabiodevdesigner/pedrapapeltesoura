@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jokenpô Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #e8ebec;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game-container {
+      border: 1px solid #3f83f8;
+      border-radius: 50px;
+      padding: 20px;
+      width: 900px;
+      height: 550px;
+      background-color: #dbecb1;
+      position: relative;
+    }
+
+    .placares {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .placar-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #3f83f8;
+    }
+
+    .score {
+      border: 1px solid #3f83f8;
+      width: 60px;
+      height: 40px;
+      text-align: center;
+      font-size: 24px;
+      margin-top: 5px;
+    }
+
+    .titulo {
+      text-align: center;
+      font-size: 36px;
+      color: #3f83f8;
+    }
+
+    .acoes {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .coluna-acoes {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .coluna-acoes img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .jogada {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      margin-top: 20px;
+    }
+
+    .jogada-circulo {
+      width: 120px;
+      height: 120px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: gray;
+    }
+
+    .jogada-circulo img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .play-button {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .play-button button {
+      background-color: #3f83f8;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .partida {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 15px;
+      color: #3f83f8;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="placares">
+      <div class="placar-box">
+        <strong>EU</strong>
+        <div class="score" id="score-eu">0</div>
+      </div>
+      <div class="titulo">Play the Game</div>
+      <div class="placar-box">
+        <strong>IA</strong>
+        <div class="score" id="score-ia">0</div>
+      </div>
+    </div>
+
+    <div class="acoes">
+      <div class="coluna-acoes" id="acoes-eu">
+        <img src="PEDRA.JPG" alt="Pedra" data-move="pedra">
+        <img src="PAPEL.jpg" alt="Papel" data-move="papel">
+        <img src="TESOURA.jpg" alt="Tesoura" data-move="tesoura">
+      </div>
+
+      <div class="jogada">
+        <div id="vencedor-msg" style="position: absolute; top: -60px; font-size: 28px; color: #3f83f8; font-weight: bold;"></div>
+        <div class="jogada-circulo" id="jogada-eu">?</div>
+        <div style="font-size: 32px; color: #3f83f8">x</div>
+        <div class="jogada-circulo" id="jogada-ia">?</div>
+      </div>
+
+
+      <div class="coluna-acoes">
+        <img src="PEDRA.JPG" alt="Pedra">
+        <img src="PAPEL.jpg" alt="Papel">
+        <img src="TESOURA.jpg" alt="Tesoura">
+      </div>
+    </div>
+
+    <div class="play-button">
+      <button onclick="jogar()">PLAY</button>
+      <button onclick="limpar()">LIMPAR</button>
+    </div>
+
+    <div class="partida" id="partida">Partida 1/3</div>
+  </div>
+
+  <script>
+    let partida = 1;
+    let scoreEu = 0;
+    let scoreIa = 0;
+
+    const opcoes = ['pedra', 'papel', 'tesoura'];
+    const jogadaEu = document.getElementById('jogada-eu');
+    const jogadaIa = document.getElementById('jogada-ia');
+
+    let escolhaJogador = '';
+
+    const imagemPorEscolha = {
+      pedra: 'PEDRA.JPG',
+      papel: 'PAPEL.jpg',
+      tesoura: 'TESOURA.jpg'
+    };
+
+    document.querySelectorAll('#acoes-eu img').forEach(img => {
+      img.addEventListener('click', () => {
+        escolhaJogador = img.dataset.move;
+        jogadaIa.innerHTML = '?'; // limpa a jogada anterior da IA
+        jogadaEu.innerHTML = `<img src="${imagemPorEscolha[escolhaJogador]}" alt="${escolhaJogador}">`;
+
+        if (partida > 3) {
+      limpar(); // reinicia o jogo automaticamente
+    }
+
+
+      });
+    });
+
+    function jogar() {
+      if (!escolhaJogador) return alert('Escolha uma jogada primeiro!');
+
+      const escolhaIa = opcoes[Math.floor(Math.random() * 3)];
+      jogadaIa.innerHTML = `<img src="${imagemPorEscolha[escolhaIa]}" alt="${escolhaIa}">`;
+
+      if (escolhaJogador === escolhaIa) {
+        // Empate
+      } else if (
+        (escolhaJogador === 'pedra' && escolhaIa === 'tesoura') ||
+        (escolhaJogador === 'papel' && escolhaIa === 'pedra') ||
+        (escolhaJogador === 'tesoura' && escolhaIa === 'papel')
+      ) {
+        scoreEu++;
+      } else {
+        scoreIa++;
+      }
+
+      document.getElementById('score-eu').textContent = scoreEu;
+      document.getElementById('score-ia').textContent = scoreIa;
+      partida++;
+      document.getElementById('partida').textContent = `Partida ${partida}/3`;
+
+      if (partida <= 3) {
+  document.getElementById('partida').textContent = `Partida ${partida}/3`;
+} else {
+  document.getElementById('partida').textContent = 'Jogar novamente';
+  
+  let msg = '';
+  if (scoreEu > scoreIa) msg = 'Você venceu!';
+  else if (scoreIa > scoreEu) msg = 'IA venceu!';
+  else msg = 'Empate!';
+  
+  document.getElementById('vencedor-msg').textContent = msg;
+}
+
+
+    }
+
+    function limpar() {
+      partida = 1;
+      scoreEu = 0;
+      scoreIa = 0;
+      escolhaJogador = '';
+      jogadaEu.textContent = '?';
+      jogadaIa.textContent = '?';
+      document.getElementById('score-eu').textContent = '0';
+      document.getElementById('score-ia').textContent = '0';
+      document.getElementById('partida').textContent = 'Partida 1/3';
+      document.getElementById('vencedor-msg').textContent = '';
+
+    }
+  </script>
+</body>
+</html>
