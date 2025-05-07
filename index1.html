@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Jokenpô Game</title>
   <style>
     * {
@@ -18,24 +18,27 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 10px;
     }
 
     .game-container {
       border: 1px solid #3f83f8;
-      border-radius: 50px;
-      padding: 20px;
-      width: 900px;
-      height: 550px;
+      border-radius: 20px;
+      padding: 15px;
+      width: 100%;
+      max-width: 800px;
       background-color: #dbecb1;
       position: relative;
+      box-sizing: border-box;
     }
 
     .placares {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      padding: 10px;
+      flex-wrap: wrap;
     }
 
     .placar-box {
@@ -43,65 +46,78 @@
       flex-direction: column;
       align-items: center;
       color: #3f83f8;
+      font-size: 1rem;
     }
 
     .score {
       border: 1px solid #3f83f8;
-      width: 60px;
-      height: 40px;
+      width: 50px;
+      height: 35px;
       text-align: center;
-      font-size: 24px;
+      font-size: 1.2rem;
       margin-top: 5px;
     }
 
     .titulo {
       text-align: center;
-      font-size: 36px;
+      font-size: 2rem;
       color: #3f83f8;
+      margin: 10px 0;
+      flex: 1;
     }
 
     .acoes {
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .coluna-acoes {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 10px;
+      align-items: center;
     }
 
     .coluna-acoes img {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .coluna-acoes img:hover,
+    .coluna-acoes img:active {
+      transform: scale(1.1);
     }
 
     .jogada {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 50px;
+      gap: 20px;
       margin-top: 20px;
+      flex-wrap: wrap;
     }
 
     .jogada-circulo {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       background-color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 2rem;
       color: gray;
     }
 
     .jogada-circulo img {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
     }
 
     .play-button {
@@ -115,17 +131,101 @@
       background-color: #3f83f8;
       border: none;
       border-radius: 10px;
-      padding: 10px 20px;
+      padding: 12px 25px;
       color: white;
-      font-size: 16px;
+      font-size: 1rem;
       cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .play-button button:hover,
+    .play-button button:active {
+      transform: scale(1.05);
     }
 
     .partida {
       text-align: center;
-      font-size: 24px;
+      font-size: 1.2rem;
       margin-top: 15px;
       color: #3f83f8;
+    }
+
+    #vencedor-msg {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.5rem;
+      color: #3f83f8;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Media Queries para telas menores */
+    @media (max-width: 600px) {
+      .game-container {
+        padding: 10px;
+        border-radius: 15px;
+      }
+
+      .placares {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .titulo {
+        font-size: 1.5rem;
+      }
+
+      .placar-box {
+        font-size: 0.9rem;
+      }
+
+      .score {
+        width: 40px;
+        height: 30px;
+        font-size: 1rem;
+      }
+
+      .acoes {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .jogada {
+        gap: 10px;
+      }
+
+      .jogada-circulo {
+        width: 80px;
+        height: 80px;
+      }
+
+      .jogada-circulo img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .coluna-acoes img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .play-button button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+
+      .partida {
+        font-size: 1rem;
+      }
+
+      #vencedor-msg {
+        font-size: 1.2rem;
+        top: -30px;
+      }
     }
   </style>
 </head>
@@ -151,12 +251,11 @@
       </div>
 
       <div class="jogada">
-        <div id="vencedor-msg" style="position: absolute; top: -60px; font-size: 28px; color: #3f83f8; font-weight: bold;"></div>
+        <div id="vencedor-msg"></div>
         <div class="jogada-circulo" id="jogada-eu">?</div>
-        <div style="font-size: 32px; color: #3f83f8">x</div>
+        <div style="font-size: 1.5rem; color: #3f83f8">x</div>
         <div class="jogada-circulo" id="jogada-ia">?</div>
       </div>
-
 
       <div class="coluna-acoes">
         <img src="PEDRA.JPG" alt="Pedra">
@@ -193,14 +292,12 @@
     document.querySelectorAll('#acoes-eu img').forEach(img => {
       img.addEventListener('click', () => {
         escolhaJogador = img.dataset.move;
-        jogadaIa.innerHTML = '?'; // limpa a jogada anterior da IA
+        jogadaIa.innerHTML = '?';
         jogadaEu.innerHTML = `<img src="${imagemPorEscolha[escolhaJogador]}" alt="${escolhaJogador}">`;
 
         if (partida > 3) {
-      limpar(); // reinicia o jogo automaticamente
-    }
-
-
+          limpar();
+        }
       });
     });
 
@@ -225,22 +322,17 @@
       document.getElementById('score-eu').textContent = scoreEu;
       document.getElementById('score-ia').textContent = scoreIa;
       partida++;
-      document.getElementById('partida').textContent = `Partida ${partida}/3`;
-
+      
       if (partida <= 3) {
-  document.getElementById('partida').textContent = `Partida ${partida}/3`;
-} else {
-  document.getElementById('partida').textContent = 'Jogar novamente';
-  
-  let msg = '';
-  if (scoreEu > scoreIa) msg = 'Você venceu!';
-  else if (scoreIa > scoreEu) msg = 'IA venceu!';
-  else msg = 'Empate!';
-  
-  document.getElementById('vencedor-msg').textContent = msg;
-}
-
-
+        document.getElementById('partida').textContent = `Partida ${partida}/3`;
+      } else {
+        document.getElementById('partida').textContent = 'Jogar novamente';
+        let msg = '';
+        if (scoreEu > scoreIa) msg = 'Você venceu!';
+        else if (scoreIa > scoreEu) msg = 'IA venceu!';
+        else msg = 'Empate!';
+        document.getElementById('vencedor-msg').textContent = msg;
+      }
     }
 
     function limpar() {
@@ -254,7 +346,6 @@
       document.getElementById('score-ia').textContent = '0';
       document.getElementById('partida').textContent = 'Partida 1/3';
       document.getElementById('vencedor-msg').textContent = '';
-
     }
   </script>
 </body>
